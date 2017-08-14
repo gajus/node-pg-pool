@@ -296,6 +296,37 @@ setTimeout(function () {
 
 ```
 
+#### remove
+
+Fired whenever a client is removed from the pool and the associated connection is terminated
+
+Example:
+
+This allows you to count the number of active connections.
+
+```js
+var Pool = require('pg-pool')
+var pool = new Pool()
+
+var activeConnectionCount = 0
+pool.on('connect', function () {
+  activeConnectionCount++
+})
+
+pool.on('remove', function (client) {
+  activeConnectionCount--
+})
+
+for (var i = 0; i < 200; i++) {
+  pool.query('SELECT NOW()')
+}
+
+setTimeout(function () {
+  console.log('active connection count:', activeConnectionCount) // output: active connection count: 10
+}, 100)
+
+```
+
 ### environment variables
 
 pg-pool & node-postgres support some of the same environment variables as `psql` supports.  The most common are:
